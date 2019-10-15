@@ -20,6 +20,7 @@ router.get('/subscribe', async (ctx, next) => {
 router.post('/publish', async (ctx, next) => {
   if (!ctx.request.body.message) return;
   clients.forEach((resolve) => resolve(ctx.request.body.message));
+  ctx.response.status = 200;
   clients = [];
 });
 
