@@ -1,9 +1,10 @@
 const Product = require('../models/Product')
+const mongoose = require('mongoose');
 
 module.exports.productsBySubcategory = async function productsBySubcategory(ctx, next) {
   const {subcategory} = ctx.request.query; 
   ctx.subcategory = subcategory
-  next()
+  await next()
 }  
 
 module.exports.productList = async function productList(ctx, next) {
@@ -24,17 +25,26 @@ module.exports.productList = async function productList(ctx, next) {
     ctx.status = 200; 
     ctx.body = {products: productsArr};
   }else{
-    console.log('1111111111111111');
-    ctx.status = 200;
+    ctx.status = 404;
     ctx.body = {products: []};
   }
 };
 
 module.exports.productById = async function productById(ctx, next) {
-  console.log('3333333333333333')
-  
+  if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) ctx.throw(400, 'невалидный id');
+  const product = await Product.findById(ctx.params.id)
+  if(!product) ctx.throw(404, 'такого товара не существует')
+  const parsedProduct = {
+    id: product.id,
+    images: product.images,
+    title: product.title,
+    description: product.description,
+    price: product.price,
+    category: product.category,
+    subcategory: product.subcategory,
+  }
+
   ctx.status = 200;
-  ctx.body = {product: {}};
-  
+  ctx.body = {product: parsedProduct}
 };
 

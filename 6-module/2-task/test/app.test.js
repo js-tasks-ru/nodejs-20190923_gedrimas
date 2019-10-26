@@ -111,7 +111,7 @@ describe('6-module-2-task', () => {
           ).to.have.property('products').that.is.an('array');
 
           const products = response.data.products;
-z
+
           expect(
               products[0],
               'товар содержит поля title, id, category, subcategory, price, description и images'
